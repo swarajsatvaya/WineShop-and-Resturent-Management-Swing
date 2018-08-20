@@ -1,0 +1,25 @@
+tFLDR/2016-2017/00547578/P
+tFLDR/2016-2017/00547578 & 16 Nov 2016
+tFLDR/2016-2017/00547578/P
+HIMANSU DUTTA F.L. TRADE
+
+G.T. Road, Kodalia
+P.O. - Bandel
+Dist. - Hooghly
+722136
+Email - hduttafl@gmail.com
+
+513/16-17
+99679.00
+
+
+
+
+public static String formatDate (String date, String initDateFormat, String endDateFormat) throws ParseException {
+
+    Date initDate = new SimpleDateFormat(initDateFormat).parse(date);
+    SimpleDateFormat formatter = new SimpleDateFormat(endDateFormat);
+    String parsedDate = formatter.format(initDate);
+
+    return parsedDate;
+}

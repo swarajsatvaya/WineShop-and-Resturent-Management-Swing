@@ -1,0 +1,596 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package design;
+
+import bean.Db_connection;
+import bean.ObjDao;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.DecimalFormat;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author Arka
+ */
+public class AddFoodItem extends javax.swing.JPanel {
+
+    /**
+     * Creates new form AddFood
+     */
+    public AddFoodItem() {
+        initComponents();
+        FoodType();
+        vat();
+
+    }
+
+    public void Search(String Tname, String vname) {
+        String n1 = Tname;
+        //System.out.println(n1);
+        String v1 = vname;
+
+        if (v1.equals("00.00")) {
+            JOptionPane.showMessageDialog(null, "<html> Enter  " + n1 + " Value Please</html>");
+        }
+    }
+
+    public void FoodType() {
+        try {
+            Connection con = Db_connection.getConnection();
+            PreparedStatement ps = con.prepareStatement("Select distinct(ftype) from food");
+            ResultSet rs = ps.executeQuery();
+            //  Ftype.removeAllItems();
+            //  Ftype.addItem("-Select-");
+
+            while (rs.next()) {
+                Ftype.addItem(rs.getString(1));
+            }
+            ps.close();
+            con.close();
+            fname1.setEnabled(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void ItemName() {
+        try {
+            Connection con = Db_connection.getConnection();
+            PreparedStatement ps = con.prepareStatement("Select fname from food where ftype='" + Ftype.getSelectedItem().toString() + "'");
+            ResultSet rs = ps.executeQuery();
+            fname1.removeAllItems();
+            fname1.addItem("-Select-");
+            while (rs.next()) {
+                //  String  f1=rs.getString("fname");
+                //  System.out.println(f1);
+                fname1.addItem(rs.getString("fname"));
+                fname1.requestFocus();
+                qty.setEnabled(true);
+
+            }
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Foodname() {
+        if (!qty.getSelectedItem().toString().equals("-Select-")) {
+            try {
+                Connection con = Db_connection.getConnection();
+                if (qty.getSelectedItem().toString().equals("Full plate")) {
+
+                    PreparedStatement ps = con.prepareStatement("Select * from food where ftype='" + Ftype.getSelectedItem().toString() + "' and fname='" + fname1.getSelectedItem().toString() + "'");
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        pr1.setText(rs.getString("fprice"));
+                        //  System.out.println(rs.getString("fprice"));
+                        qty2.setText("0");
+                        //vat1.setText("0.0");
+                        dis.setText(rs.getString("discount"));
+                    }
+                    rs.close();
+                    ps.close();
+                } else {
+                    PreparedStatement ps1 = con.prepareStatement("Select * from food where ftype='" + Ftype.getSelectedItem().toString() + "' and fname='" + fname1.getSelectedItem().toString() + "'");
+                    ResultSet rs1 = ps1.executeQuery();
+                    if (rs1.next()) {
+                        pr1.setText(rs1.getString("hprice"));
+                        // System.out.println(rs1.getString("hprice"));
+                        qty2.setText("0");
+                        //vat1.setText("0.0");
+                        dis.setText(rs1.getString("discount"));
+                    }
+                    ps1.close();
+
+                }
+                // vat();
+                con.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            pr1.setText("00.00");
+            dis.setText("00.00");
+            vat1.setText("00.00");
+            qty2.setText("0");
+            pr1.setText("00.00");
+
+        }
+
+    }
+
+    double vatrate = 0;
+
+    public void vat() {
+        try {
+            Connection con = Db_connection.getConnection();
+            PreparedStatement ps = con.prepareStatement("Select vat from constant where slno='" + 1 + "'");
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                vatrate = Double.parseDouble(rs.getString("vat"));
+
+            }
+            rs.close();
+            ps.close();
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        Ftype = new javax.swing.JComboBox<>();
+        fname1 = new javax.swing.JComboBox<>();
+        pr1 = new javax.swing.JTextField();
+        dis = new javax.swing.JTextField();
+        price = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        qty = new javax.swing.JComboBox<>();
+        vat1 = new javax.swing.JTextField();
+        qty2 = new javax.swing.JTextField();
+
+        Ftype.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        Ftype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-" }));
+        Ftype.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                FtypeMouseClicked(evt);
+            }
+        });
+        Ftype.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FtypeActionPerformed(evt);
+            }
+        });
+        Ftype.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                FtypeKeyPressed(evt);
+            }
+        });
+
+        fname1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        fname1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-" }));
+        fname1.setEnabled(false);
+        fname1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                fname1MouseClicked(evt);
+            }
+        });
+        fname1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                fname1KeyPressed(evt);
+            }
+        });
+
+        pr1.setEditable(false);
+        pr1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        pr1.setText("00.00");
+        pr1.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                pr1InputMethodTextChanged(evt);
+            }
+        });
+        pr1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                pr1PropertyChange(evt);
+            }
+        });
+        pr1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                pr1KeyPressed(evt);
+            }
+        });
+
+        dis.setEditable(false);
+        dis.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        dis.setText("00.00");
+        dis.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                disKeyPressed(evt);
+            }
+        });
+
+        price.setEditable(false);
+        price.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        price.setText("00.00");
+        price.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                priceKeyPressed(evt);
+            }
+        });
+
+        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel4.setText("+Add row");
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel4MouseClicked(evt);
+            }
+        });
+
+        jLabel5.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel5.setText("- Remove Row");
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel5MouseClicked(evt);
+            }
+        });
+
+        qty.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        qty.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-", "half plate", "Full plate", "" }));
+        qty.setEnabled(false);
+        qty.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                qtyMouseClicked(evt);
+            }
+        });
+        qty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qtyActionPerformed(evt);
+            }
+        });
+        qty.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                qtyKeyPressed(evt);
+            }
+        });
+
+        vat1.setEditable(false);
+        vat1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        vat1.setText("00.00");
+        vat1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                vat1KeyPressed(evt);
+            }
+        });
+
+        qty2.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        qty2.setText("0");
+        qty2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                qty2KeyPressed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(Ftype, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
+                .addComponent(fname1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(qty, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pr1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(qty2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(vat1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dis, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(dis, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                                .addComponent(vat1)
+                                .addComponent(Ftype, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(fname1, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(qty, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(pr1, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(qty2, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void FtypeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_FtypeKeyPressed
+        // TODO add your handling code here:
+        int a = evt.getKeyCode();
+        switch (a) {
+            case KeyEvent.VK_UP:
+                break;
+            case KeyEvent.VK_DOWN:
+                // getValue();
+                // RetalCode1.requestFocus();
+                break;
+            case KeyEvent.VK_LEFT:
+
+                break;
+            case KeyEvent.VK_RIGHT:
+                ItemName();
+                //fname1.requestFocus();
+
+                break;
+            case KeyEvent.VK_ENTER:
+                ItemName();
+
+                break;
+        }
+    }//GEN-LAST:event_FtypeKeyPressed
+
+    private void fname1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fname1KeyPressed
+        // TODO add your handling code here:
+        int a = evt.getKeyCode();
+        switch (a) {
+            case KeyEvent.VK_UP:
+                break;
+            case KeyEvent.VK_DOWN:
+                // getValue();
+                // RetalCode1.requestFocus();
+                break;
+            case KeyEvent.VK_LEFT:
+                Ftype.requestFocus();
+                break;
+            case KeyEvent.VK_RIGHT:
+                qty.requestFocus();
+                break;
+            case KeyEvent.VK_ENTER:
+                qty.requestFocus();
+                break;
+        }
+    }//GEN-LAST:event_fname1KeyPressed
+
+    private void pr1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pr1KeyPressed
+
+        int a = evt.getKeyCode();
+        switch (a) {
+            case KeyEvent.VK_UP:
+                break;
+            case KeyEvent.VK_DOWN:
+                // getValue();
+                // RetalCode1.requestFocus();
+                break;
+            case KeyEvent.VK_LEFT:
+
+                qty.requestFocus();
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (pr1.getText().trim().equals("")) {
+                    pr1.setText("0");
+                    dis.requestFocus();
+                } else {
+                    dis.requestFocus();
+                }
+
+                break;
+            case KeyEvent.VK_ENTER:
+                if (pr1.getText().trim().equals("")) {
+                    pr1.setText("0");
+                    dis.requestFocus();
+                } else {
+                    dis.requestFocus();
+                }
+                break;
+        }
+
+    }//GEN-LAST:event_pr1KeyPressed
+
+    private void disKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_disKeyPressed
+        // TODO add your handling code here:
+
+        int a = evt.getKeyCode();
+        switch (a) {
+            case KeyEvent.VK_UP:
+                break;
+            case KeyEvent.VK_DOWN:
+                // getValue();
+                // RetalCode1.requestFocus();
+                break;
+            case KeyEvent.VK_LEFT:
+
+                pr1.requestFocus();
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (dis.getText().trim().equals("")) {
+                    dis.setText("0");
+                    price.requestFocus();
+                } else {
+                    price.requestFocus();
+                }
+
+                break;
+            case KeyEvent.VK_ENTER:
+                if (dis.getText().trim().equals("")) {
+                    dis.setText("0");
+                    price.requestFocus();
+                } else {
+                    price.requestFocus();
+                }
+                break;
+        }
+
+    }//GEN-LAST:event_disKeyPressed
+
+    private void priceKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_priceKeyPressed
+        // TODO add your handling code here:
+        int a = evt.getKeyCode();
+        switch (a) {
+            case KeyEvent.VK_UP:
+                break;
+            case KeyEvent.VK_DOWN:
+                // getValue();
+                // RetalCode1.requestFocus();
+                break;
+            case KeyEvent.VK_LEFT:
+
+                dis.requestFocus();
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (dis.getText().trim().equals("")) {
+                    dis.setText("0");
+                    price.requestFocus();
+                } else {
+                    price.requestFocus();
+                }
+
+                break;
+            case KeyEvent.VK_ENTER:
+                if (dis.getText().trim().equals("")) {
+                    dis.setText("0");
+                    price.requestFocus();
+                } else {
+                    price.requestFocus();
+                }
+                break;
+        }
+
+
+    }//GEN-LAST:event_priceKeyPressed
+
+    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
+        ObjDao.OS.AddFood();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel4MouseClicked
+
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+        // TODO add your handling code here:
+        ObjDao.OS.RemoveFood();
+    }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void qtyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_qtyKeyPressed
+        // TODO add your handling code here:
+        Foodname();
+
+    }//GEN-LAST:event_qtyKeyPressed
+
+    private void vat1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_vat1KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_vat1KeyPressed
+
+    public void vatcalculate() {
+        double price1 = Double.parseDouble(pr1.getText());
+        int amount = Integer.parseInt(qty2.getText());
+        Float Disc = Float.parseFloat(dis.getText());
+        //Float vat=Float.parseFloat(vat1.getText());
+        double T1 = (price1 * amount) - (price1 * amount * Disc / 100);
+        Double v = T1 * vatrate / 100;
+        double T = T1 + v;
+        vat1.setText(String.valueOf(new DecimalFormat("##.##").format(v)));
+        price.setText(String.valueOf(new DecimalFormat("##.##").format(T)));
+
+    }
+    private void qty2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_qty2KeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_RIGHT) {
+            vatcalculate();
+            ObjDao.OS.AddFood();
+
+        }
+    }//GEN-LAST:event_qty2KeyPressed
+
+    private void qtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qtyActionPerformed
+        // TODO add your handling code here:
+        Foodname();
+
+    }//GEN-LAST:event_qtyActionPerformed
+
+    private void fname1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fname1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fname1MouseClicked
+
+    private void FtypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FtypeMouseClicked
+        // TODO add your handling code here:
+        ItemName();
+    }//GEN-LAST:event_FtypeMouseClicked
+
+    private void qtyMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_qtyMouseClicked
+        // TODO add your handling code here:
+        Foodname();
+
+
+    }//GEN-LAST:event_qtyMouseClicked
+
+    private void FtypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FtypeActionPerformed
+        // TODO add your handling code here:
+        ItemName();
+    }//GEN-LAST:event_FtypeActionPerformed
+
+    private void pr1InputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_pr1InputMethodTextChanged
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_pr1InputMethodTextChanged
+
+    private void pr1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_pr1PropertyChange
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_pr1PropertyChange
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JComboBox<String> Ftype;
+    public javax.swing.JTextField dis;
+    public javax.swing.JComboBox<String> fname1;
+    public javax.swing.JLabel jLabel4;
+    public javax.swing.JLabel jLabel5;
+    public javax.swing.JTextField pr1;
+    public javax.swing.JTextField price;
+    public javax.swing.JComboBox<String> qty;
+    public javax.swing.JTextField qty2;
+    public javax.swing.JTextField vat1;
+    // End of variables declaration//GEN-END:variables
+}
